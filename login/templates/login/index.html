@@ -1,0 +1,48 @@
+{% load socialaccount %}
+{% providers_media_js %}
+
+<html>
+  <head>
+    <title>Registration</title>
+  </head>
+	  <body>
+
+	  {% if user.is_authenticated %}
+	  	<p>Welcome, {{ user.username }}!</p>	
+	  	
+    	{% get_social_accounts user as accounts %}
+    	google users:
+    	{% if accounts.google %}
+	    	{% for user in accounts.google %}
+	    		{{ user }}
+	    	{% endfor %}
+	    {% else %}
+	    	none
+	    {% endif %}</br>
+    	facebook users:
+    	{% if accounts.facebook %}
+	    	{% for user in accounts.facebook %}
+	    		{{ user }}
+	    	{% endfor %}
+    	{% else %}
+	    	none
+			{% endif %}
+
+	  	<form method="post" action="{% url 'account_logout' %}">
+			  {% csrf_token %}
+			  {% if redirect_field_value %}
+			    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+			  {% endif %}
+			  <button class="STYLE_ME" type="submit">Logout</button>
+			</form>
+
+
+	  {% else %}
+	  	<p>Welcome, guest! Please log in!</p>
+		  <h1>Registration links</h1>
+		  <button><a href="{% provider_login_url 'google' %}">Login with Google</a></button>
+		  <button><a href="{% provider_login_url 'facebook' method='oauth2'%}">Login with facebook</a></button> 	
+	  {% endif %}
+
+  </body>
+</html>
